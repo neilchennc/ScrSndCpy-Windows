@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ScrSndCpy")]
-[assembly: AssemblyDescription("Simple GUI tool for launching scrcpy and sndcpy.")]
+[assembly: AssemblyDescription("The GUI application executes both scrcpy and sndcpy simultaneously.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Neil Chen")]
 [assembly: AssemblyProduct("ScrSndCpy")]
-[assembly: AssemblyCopyright("Copyright ©  2022 (Neil Chen)")]
+[assembly: AssemblyCopyright("Copyright © 2022 Neil Chen")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
