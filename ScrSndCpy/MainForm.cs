@@ -15,7 +15,8 @@ namespace ScrSndCpy
 {
     public partial class MainForm : Form
     {
-        private const string SCRCPY_FILE = "scrcpy-direct.bat";
+        private const string ADB_FILE = "adb.exe";
+        private const string SCRCPY_FILE = "scrcpy.exe";
         private const string SNDCPY_FILE = "sndcpy-direct.bat";
 
         private TaskScheduler uiContext;
@@ -64,7 +65,7 @@ namespace ScrSndCpy
         /// </summary>
         private List<string> GetDeviceList()
         {
-            var p = ProcessHelper.Create("adb.exe", "devices");
+            var p = ProcessHelper.Create(ADB_FILE, "devices", redirectStandardOutput: true);
             p.Start();
 
             // Read the output stream first and then wait.
@@ -96,7 +97,7 @@ namespace ScrSndCpy
             Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiContext);
         }
 
-        private void CastButton_Click(object sender, EventArgs e)
+        private async void CastButton_Click(object sender, EventArgs e)
         {
             if (TextBoxDevice.Text.Trim().Length > 0)
             {
@@ -128,14 +129,13 @@ namespace ScrSndCpy
                 if (CheckBoxPowerOffClose.Checked)
                     argumentString.Append(" --power-off-on-close");
 
-                // Start scrcpy
-                TextBoxLog.AppendText($"Start {SCRCPY_FILE} {argumentString}");
-                TextBoxLog.AppendText(Environment.NewLine);
-                Task.Factory.StartNew(() =>
+                // Connect and check state
+                var errorMessage = await Task.Factory.StartNew(() =>
                 {
+                    // Connect to the device if IP address is present
                     try
                     {
-                        // Check if device is exists in the connected list
+                        // Check if device is already existing in the connected list
                         if (!connectedDevices.Contains(serial))
                         {
                             // Check IP address format
@@ -150,10 +150,10 @@ namespace ScrSndCpy
                             // It's IP address format, connect to it
                             DispatchUiAction(() =>
                             {
-                                TextBoxLog.AppendText($"Connect to {serial}...");
+                                TextBoxLog.AppendText($"Connecting to {serial}...");
                                 TextBoxLog.AppendText(Environment.NewLine);
                             });
-                            var adbConnect = ProcessHelper.Create("adb.exe", $"connect {serial}");
+                            var adbConnect = ProcessHelper.Create(ADB_FILE, $"connect {serial}");
                             adbConnect.Start();
                             adbConnect.WaitForExit();
                         }
@@ -163,7 +163,28 @@ namespace ScrSndCpy
                         Debug.WriteLine("NOT IP Address format, ignored");
                     }
 
-                    var scrcpy = ProcessHelper.Create(SCRCPY_FILE, argumentString.ToString());
+                    // Check ADB state
+                    var pAdbGetState = ProcessHelper.Create(ADB_FILE, $"-s {serial} get-state", redirectStandardError: true);
+                    pAdbGetState.Start();
+                    var errorOutput = pAdbGetState.StandardError.ReadToEnd();
+                    pAdbGetState.WaitForExit();
+
+                    return (pAdbGetState.ExitCode == 0 ? null : errorOutput);
+                });
+
+                // Show error messages if errors occured
+                if (errorMessage != null)
+                {
+                    TextBoxLog.AppendText(errorMessage);
+                    return;
+                }
+
+                // Start scrcpy
+                TextBoxLog.AppendText($"Run command: {SCRCPY_FILE} {argumentString}");
+                TextBoxLog.AppendText(Environment.NewLine);
+                var scrcpyTask = Task.Factory.StartNew(() =>
+                {
+                    var scrcpy = ProcessHelper.Create(SCRCPY_FILE, argumentString.ToString(), redirectStandardOutput: true);
                     scrcpy.Start();
 
                     while (!scrcpy.HasExited)
@@ -180,20 +201,17 @@ namespace ScrSndCpy
                     TextBoxLog.AppendText(Environment.NewLine);
 
                     // Terminate sndcpy
-                    var stopSndcpy = ProcessHelper.Create("adb.exe", $"-s {serial} shell am force-stop com.rom1v.sndcpy");
+                    var stopSndcpy = ProcessHelper.Create(ADB_FILE, $"-s {serial} shell am force-stop com.rom1v.sndcpy");
                     stopSndcpy.Start();
                     stopSndcpy.WaitForExit();
-
-                    TextBoxLog.AppendText("sndcpy stopped.");
-                    TextBoxLog.AppendText(Environment.NewLine);
                 });
 
                 // Start sndcpy
-                TextBoxLog.AppendText($"Start command: {SNDCPY_FILE} {serial}");
+                TextBoxLog.AppendText($"Run command: {SNDCPY_FILE} {serial}");
                 TextBoxLog.AppendText(Environment.NewLine);
-                Task.Factory.StartNew(() =>
+                var sndcpyTask = Task.Factory.StartNew(() =>
                 {
-                    var p = ProcessHelper.Create(SNDCPY_FILE, serial);
+                    var p = ProcessHelper.Create(SNDCPY_FILE, serial, redirectStandardOutput: true);
                     p.Start();
 
                     while (!p.HasExited)
@@ -205,6 +223,9 @@ namespace ScrSndCpy
                             TextBoxLog.AppendText(Environment.NewLine);
                         });
                     }
+
+                    TextBoxLog.AppendText("sndcpy stopped.");
+                    TextBoxLog.AppendText(Environment.NewLine);
                 });
             }
         }
