@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +22,7 @@ namespace ScrSndCpy
         private const string SNDCPY_FILE = "sndcpy-direct.bat";
 
         private TaskScheduler uiContext;
+        private DeviceMonitor deviceMonitor;
         private readonly BindingList<string> connectedDevices = new BindingList<string>();
 
         public MainForm()
@@ -32,72 +35,54 @@ namespace ScrSndCpy
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
 
-            UpdateDeviceList();
+            deviceMonitor = new DeviceMonitor();
+            deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
+            deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
+            deviceMonitor.Start();
+        }
+
+        private void DeviceMonitor_OnDeviceChanged(List<string> devices)
+        {
+            DispatchUiAction(() =>
+            {
+                connectedDevices.Clear();
+                devices.ForEach(d => connectedDevices.Add(d));
+                ListBoxDevices.SelectedIndex = -1;
+            });
+        }
+
+        private void DeviceMonitor_OnConnectionLost()
+        {
+            // Cleanup device list
+            DispatchUiAction(() =>
+            {
+                connectedDevices.Clear();
+                TextBoxLog.AppendText("Connection lost, restart daemon now...");
+                TextBoxLog.AppendText(Environment.NewLine);
+            });
+
+            // Restart server
+            var pStartServer = ProcessHelper.Create(ADB_FILE, "start-server", redirectStandardError: true);
+            pStartServer.Start();
+            while (!pStartServer.HasExited)
+            {
+                var output = pStartServer.StandardError.ReadLine();
+                DispatchUiAction(() => TextBoxLog.AppendText($"{output}{Environment.NewLine}"));
+            }
+            pStartServer.WaitForExit();
+
+            // Restart
+            deviceMonitor.Start();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
+            deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
+            deviceMonitor.Stop();
         }
 
-        private void UpdateDeviceList()
-        {
-            Task.Factory.StartNew(() =>
-            {
-                while (!IsDisposed)
-                {
-                    var newDevices = GetDeviceList();
-                    if (!newDevices.SequenceEqual(connectedDevices))
-                    {
-                        DispatchUiAction(() =>
-                        {
-                            connectedDevices.Clear();
-                            newDevices.ForEach(d => connectedDevices.Add(d));
-                            ListBoxDevices.SelectedIndex = -1;
-                        });
-                    }
-                    Thread.Sleep(1000);
-                }
-            });
-        }
-
-        /// <summary>
-        /// Get connected devices from ADB.
-        /// </summary>
-        private List<string> GetDeviceList()
-        {
-            var p = ProcessHelper.Create(ADB_FILE, "devices", redirectStandardOutput: true);
-            p.Start();
-
-            // Read the output stream first and then wait.
-            string output = p.StandardOutput.ReadToEnd();
-
-            // Wait for the child process to exit
-            p.WaitForExit();
-
-            Debug.WriteLine(output);
-            var list = new List<string>();
-            var lines = output.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            if (lines.Length > 1 && lines[0] == "List of devices attached")
-            {
-                lines.Skip(1).ToList().ForEach(line =>
-                {
-                    var devices = line.Split(new char[] { '\t' }, StringSplitOptions.None);
-                    list.Add(devices[0]);
-                });
-            }
-
-            return list;
-        }
-
-        /// <summary>
-        /// Dispatch a task to be executed on UI thread.
-        /// </summary>
-        private void DispatchUiAction(Action action)
-        {
-            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiContext);
-        }
-
-        private async void CastButton_Click(object sender, EventArgs e)
+        private async void ButtonPlay_Click(object sender, EventArgs e)
         {
             if (TextBoxDevice.Text.Trim().Length > 0)
             {
@@ -176,6 +161,13 @@ namespace ScrSndCpy
                 if (errorMessage != null)
                 {
                     TextBoxLog.AppendText(errorMessage);
+
+                    // Device unauthorized
+                    if (errorMessage.StartsWith("error: device unauthorized."))
+                    {
+                        TextBoxLog.AppendText("After confirming with the dialog, please try again.");
+                        TextBoxLog.AppendText(Environment.NewLine);
+                    }
                     return;
                 }
 
@@ -236,6 +228,14 @@ namespace ScrSndCpy
             {
                 TextBoxDevice.Text = ListBoxDevices.SelectedItem.ToString();
             }
+        }
+
+        /// <summary>
+        /// Dispatch a task to be executed on UI thread.
+        /// </summary>
+        private void DispatchUiAction(Action action)
+        {
+            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiContext);
         }
     }
 }

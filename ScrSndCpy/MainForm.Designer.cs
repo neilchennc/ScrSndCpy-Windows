@@ -78,7 +78,7 @@
             this.ButtonPlay.TabIndex = 2;
             this.ButtonPlay.Text = "Play";
             this.ButtonPlay.UseVisualStyleBackColor = true;
-            this.ButtonPlay.Click += new System.EventHandler(this.CastButton_Click);
+            this.ButtonPlay.Click += new System.EventHandler(this.ButtonPlay_Click);
             // 
             // TextBoxLog
             // 

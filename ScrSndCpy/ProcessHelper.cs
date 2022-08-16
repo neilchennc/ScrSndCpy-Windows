@@ -9,6 +9,9 @@ namespace ScrSndCpy
 {
     internal class ProcessHelper
     {
+        /// <summary>
+        /// Create a invisible process.
+        /// </summary>
         public static Process Create(string filename, string arguments, bool redirectStandardOutput = false, bool redirectStandardError = false)
         {
             Process p = new Process();
