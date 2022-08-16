@@ -30,7 +30,7 @@ namespace ScrSndCpy
                     networkStream = tcpClient.GetStream();
                     byte[] data = System.Text.Encoding.ASCII.GetBytes("0012host:track-devices");
                     networkStream.Write(data, 0, data.Length);
-                    data = new byte[256];
+                    data = new byte[1024];
                     string responseData = string.Empty;
 
                     while (tcpClient.Connected)
