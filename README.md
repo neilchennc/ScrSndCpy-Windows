@@ -26,7 +26,9 @@ Both of them do NOT require any root access.
 
 ## Download
 
-*TODO*
+- [ScrSndCpy-v1.0.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.0/ScrSndCpy-v1.0.zip)
+
+  SHA-256: aed5f62a458cff8e34606144bca0ac8b4cd43ae1eae0ba5fecfb868f959dac2d
 
 ## How to use
 

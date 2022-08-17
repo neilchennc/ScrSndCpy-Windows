@@ -26,7 +26,9 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 ## 下載
 
-*TODO*
+- [ScrSndCpy-v1.0.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.0/ScrSndCpy-v1.0.zip)
+
+  SHA-256: aed5f62a458cff8e34606144bca0ac8b4cd43ae1eae0ba5fecfb868f959dac2d
 
 ## 如何使用
 
