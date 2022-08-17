@@ -2,6 +2,8 @@
 
 *ScrSndCpy = **Scr**een **S**ou**nd** **C**o**py***
 
+[繁體中文](README.zh-Hant.md)
+
 A Windows GUI application executes both [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) simultaneously, used to display screen, sound and control Android phones or tablets.
 
 ![Screenshot](screenshots/scrsndcpy-screen.png "Screenshot")
@@ -14,22 +16,50 @@ A Windows GUI application executes both [scrcpy](https://github.com/Genymobile/s
 
 Both of them do NOT require any root access.
 
+## Requirements
+
+- Windows 7/8/10/11
+
+- Android 5.1+ (or Android 10+ if you want audio output)
+
+- [VLC](https://www.videolan.org/) installed (PC side only, for audio output)
+
 ## Download
 
-TODO
+*TODO*
 
 ## How to use
 
-Your Android devices must [enable debugging mode](https://developer.android.com/studio/command-line/adb.html#Enabling) before using ScrSndCpy
+Your Android devices must [enable debugging mode](https://developer.android.com/studio/command-line/adb.html#Enabling) before using ScrSndCpy, or find [tutorial videos on YouTube](https://www.youtube.com/results?search_query=android+enable+usb+debugging).
 
-- Plug your Android devices (**wire** method), or connect to Wi-Fi get your IP address (**wireless** method)
+### Connect via USB
 
 - Download latest ScrSndCpy and extract it
 
 - Run **ScrSndCpy.exe**
 
-- Select a device or enter IP Address (default port number is 5555)
+- Plug your Android devices
+
+- You device will popup a USB debugging confirmation dialog, click "Allow" button
+
+- In ScrSndCpy, select a device in the ScrSndCpy
 
 - Click **Play** button
 
-You can check [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) for more details.
+### Connect via Wi-Fi (TCP/IP)
+
+- Download latest ScrSndCpy and extract it
+
+- Run **ScrSndCpy.exe**
+
+- Connect to Wi-Fi access point, note that your PC must connect to the same access point (network segment)
+
+- In the ScrSndCpy, enter Android device's IP address
+
+- Click **Play** button
+
+- You device will popup a USB debugging confirmation dialog, click "Allow" button
+
+- Click **Play** button again
+
+You can check out [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) for more introductions, functions and controls.
