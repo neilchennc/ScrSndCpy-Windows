@@ -10,7 +10,7 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 ## 關於scrcpy與sndcpy
 
-[scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy)是由Genymobile開發的程式，可以透過USB或是網路（TCP/IP）來顯示或控制Android裝置（至少要Android 5.1以上）。
+[scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy)是由Genymobile開發的程式，可以透過USB或是網路（TCP/IP）來顯示或控制Android裝置（至少要Android 5.0以上）。
 
 [sndcpy](https://github.com/rom1v/sndcpy) (Sound Copy)是由rom1v開發的程式，可以透過USB或是網路（TCP/IP）將Android裝置的聲音傳到電腦播放（至少要Android 10以上，電腦需安裝[VLC](https://www.videolan.org/)才能播放聲音）。
 
@@ -20,9 +20,9 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 - Windows 7/8/10/11
 
-- Android 5.1以上（如果想要聲音輸出，則要Android 10以上）
+- Android 5.0以上（如果想要聲音輸出，則要Android 10以上）
 
-- 安裝[VLC](https://www.videolan.org/)（只有電腦端，用來播放聲音）
+- 安裝[VLC](https://www.videolan.org/)（安裝在電腦，用來播放聲音）
 
 ## 下載
 

@@ -10,7 +10,7 @@ A Windows GUI application executes both [scrcpy](https://github.com/Genymobile/s
 
 ## About scrcpy and sndcpy
 
-[scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy) is an application provides display and control of Android devices connected via USB or over TCP/IP (requires at least Android 5.1) which developed by Genymobile.
+[scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy) is an application provides display and control of Android devices connected via USB or over TCP/IP (requires at least Android 5.0) which developed by Genymobile.
 
 [sndcpy](https://github.com/rom1v/sndcpy) (Sound Copy) is an application forwards audio from an Android device to the computer (requires at least Android 10, and [VLC](https://www.videolan.org/) must be installed on the PC) which developed by rom1v.
 
@@ -20,9 +20,9 @@ Both of them do NOT require any root access.
 
 - Windows 7/8/10/11
 
-- Android 5.1+ (or Android 10+ if you want audio output)
+- Android 5.0+ (or Android 10+ if you want audio output)
 
-- [VLC](https://www.videolan.org/) installed (PC side only, for audio output)
+- [VLC](https://www.videolan.org/) installed (install on PC, for audio output)
 
 ## Download
 
