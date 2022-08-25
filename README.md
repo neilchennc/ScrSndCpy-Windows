@@ -1,4 +1,4 @@
-# ScrSndCpy
+# ScrSndCpy (Windows)
 
 *ScrSndCpy = **Scr**een **S**ou**nd** **C**o**py***
 
@@ -7,6 +7,8 @@
 A Windows GUI application executes both [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) simultaneously, used to display screen, sound and control Android phones or tablets.
 
 ![Screenshot](screenshots/scrsndcpy-screen.png "Screenshot")
+
+*Looking for Linux version? [Click here](https://github.com/neilchennc/ScrSndCpy-Linux)*
 
 ## About scrcpy and sndcpy
 
@@ -63,5 +65,50 @@ Your Android devices must [enable debugging mode](https://developer.android.com/
 - You device will popup a USB debugging confirmation dialog, click "Allow" button
 
 - Click **Play** button again
+
+## Shortcuts (references from scrcpy 1.24)
+
+In the following list, <kbd>MOD</kbd> is the shortcut modifier. By default, it's
+(left) <kbd>Alt</kbd> or (left) <kbd>Super</kbd>.
+
+_<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
+
+[Super]: https://en.wikipedia.org/wiki/Super_key_(keyboard_button)
+
+ | Action                                      |   Shortcut
+ | ------------------------------------------- |:-----------------------------
+ | Switch fullscreen mode                      | <kbd>MOD</kbd>+<kbd>f</kbd>
+ | Rotate display left                         | <kbd>MOD</kbd>+<kbd>←</kbd> _(left)_
+ | Rotate display right                        | <kbd>MOD</kbd>+<kbd>→</kbd> _(right)_
+ | Resize window to 1:1 (pixel-perfect)        | <kbd>MOD</kbd>+<kbd>g</kbd>
+ | Resize window to remove black borders       | <kbd>MOD</kbd>+<kbd>w</kbd> \| _Double-left-click¹_
+ | Click on `HOME`                             | <kbd>MOD</kbd>+<kbd>h</kbd> \| _Middle-click_
+ | Click on `BACK`                             | <kbd>MOD</kbd>+<kbd>b</kbd> \| _Right-click²_
+ | Click on `APP_SWITCH`                       | <kbd>MOD</kbd>+<kbd>s</kbd> \| _4th-click³_
+ | Click on `MENU` (unlock screen)⁴            | <kbd>MOD</kbd>+<kbd>m</kbd>
+ | Click on `VOLUME_UP`                        | <kbd>MOD</kbd>+<kbd>↑</kbd> _(up)_
+ | Click on `VOLUME_DOWN`                      | <kbd>MOD</kbd>+<kbd>↓</kbd> _(down)_
+ | Click on `POWER`                            | <kbd>MOD</kbd>+<kbd>p</kbd>
+ | Power on                                    | _Right-click²_
+ | Turn device screen off (keep mirroring)     | <kbd>MOD</kbd>+<kbd>o</kbd>
+ | Turn device screen on                       | <kbd>MOD</kbd>+<kbd>Shift</kbd>+<kbd>o</kbd>
+ | Rotate device screen                        | <kbd>MOD</kbd>+<kbd>r</kbd>
+ | Expand notification panel                   | <kbd>MOD</kbd>+<kbd>n</kbd> \| _5th-click³_
+ | Expand settings panel                       | <kbd>MOD</kbd>+<kbd>n</kbd>+<kbd>n</kbd> \| _Double-5th-click³_
+ | Collapse panels                             | <kbd>MOD</kbd>+<kbd>Shift</kbd>+<kbd>n</kbd>
+ | Copy to clipboard⁵                          | <kbd>MOD</kbd>+<kbd>c</kbd>
+ | Cut to clipboard⁵                           | <kbd>MOD</kbd>+<kbd>x</kbd>
+ | Synchronize clipboards and paste⁵           | <kbd>MOD</kbd>+<kbd>v</kbd>
+ | Inject computer clipboard text              | <kbd>MOD</kbd>+<kbd>Shift</kbd>+<kbd>v</kbd>
+ | Enable/disable FPS counter (on stdout)      | <kbd>MOD</kbd>+<kbd>i</kbd>
+ | Pinch-to-zoom                               | <kbd>Ctrl</kbd>+_click-and-move_
+ | Drag & drop APK file                        | Install APK from computer
+ | Drag & drop non-APK file                    | Push file to device
+
+_¹Double-click on black borders to remove them._  
+_²Right-click turns the screen on if it was off, presses BACK otherwise._  
+_³4th and 5th mouse buttons, if your mouse has them._  
+_⁴For react-native apps in development, `MENU` triggers development menu._  
+_⁵Only on Android >= 7._
 
 You can check out [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) for more introductions, functions and controls.
