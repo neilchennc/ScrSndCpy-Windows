@@ -30,15 +30,39 @@ namespace ScrSndCpy
             InitializeComponent();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
 
-            deviceMonitor = new DeviceMonitor();
-            deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
-            deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
-            deviceMonitor.Start();
+            await Task.Factory.StartNew(() => { CheckScrcpyVersion(); });
+        }
+
+        private void CheckScrcpyVersion()
+        {
+            try
+            {
+                // Check scrcpy version
+                var pCheckScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
+                pCheckScrcpy.Start();
+                string info = pCheckScrcpy.StandardOutput.ReadToEnd();
+                pCheckScrcpy.WaitForExit();
+                DispatchUiAction(() => TextBoxLog.AppendText(info));
+
+                // Start tracking devices
+                deviceMonitor = new DeviceMonitor();
+                deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
+                deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
+                deviceMonitor.Start();
+            }
+            catch
+            {
+                DispatchUiAction(() =>
+                {
+                    TextBoxLog.AppendText("Failed to check scrcpy version.");
+                    ButtonPlay.Enabled = false;
+                });
+            }
         }
 
         private void DeviceMonitor_OnDeviceChanged(List<string> devices)
@@ -77,9 +101,12 @@ namespace ScrSndCpy
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
-            deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
-            deviceMonitor.Stop();
+            if (deviceMonitor != null)
+            {
+                deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
+                deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
+                deviceMonitor.Stop();
+            }
         }
 
         private async void ButtonPlay_Click(object sender, EventArgs e)
