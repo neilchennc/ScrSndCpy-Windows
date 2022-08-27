@@ -28,9 +28,9 @@ Both of them do NOT require any root access.
 
 ## Download
 
-- [ScrSndCpy-v1.0.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.0/ScrSndCpy-v1.0.zip)
+- [ScrSndCpy-v1.1.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.1/ScrSndCpy-v1.1.zip)
 
-  SHA-256: aed5f62a458cff8e34606144bca0ac8b4cd43ae1eae0ba5fecfb868f959dac2d
+  SHA-256: e30f46a4f5a3876bdfe7118c7e879ae462276f9cfdceba12dd77d7000103909a
 
 ## How to use
 
@@ -44,7 +44,7 @@ Your Android devices must [enable debugging mode](https://developer.android.com/
 
 - Plug your Android devices
 
-- You device will popup a USB debugging confirmation dialog, click "Allow" button
+- Your device will popup a USB debugging confirmation dialog, click "Allow" button
 
 - In ScrSndCpy, select a device in the ScrSndCpy
 
@@ -62,7 +62,7 @@ Your Android devices must [enable debugging mode](https://developer.android.com/
 
 - Click **Play** button
 
-- You device will popup a USB debugging confirmation dialog, click "Allow" button
+- Your device will popup a USB debugging confirmation dialog, click "Allow" button
 
 - Click **Play** button again
 
@@ -112,3 +112,11 @@ _⁴For react-native apps in development, `MENU` triggers development menu._
 _⁵Only on Android >= 7._
 
 You can check out [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) for more introductions, functions and controls.
+
+## Development environment
+
+- OS: Windows 10
+
+- Language: C#
+
+- IDE: Visual Studio
