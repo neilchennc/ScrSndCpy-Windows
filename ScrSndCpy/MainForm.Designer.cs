@@ -49,6 +49,8 @@
             this.TextBoxMaxFps = new System.Windows.Forms.TextBox();
             this.CheckBoxPowerOffClose = new System.Windows.Forms.CheckBox();
             this.CheckBoxNoPowerOnStart = new System.Windows.Forms.CheckBox();
+            this.CheckBoxShowTouches = new System.Windows.Forms.CheckBox();
+            this.CheckBoxNoKeyRepeat = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // ListBoxDevices
@@ -72,7 +74,7 @@
             // 
             // ButtonPlay
             // 
-            this.ButtonPlay.Location = new System.Drawing.Point(12, 428);
+            this.ButtonPlay.Location = new System.Drawing.Point(8, 453);
             this.ButtonPlay.Name = "ButtonPlay";
             this.ButtonPlay.Size = new System.Drawing.Size(195, 23);
             this.ButtonPlay.TabIndex = 2;
@@ -88,7 +90,7 @@
             this.TextBoxLog.Name = "TextBoxLog";
             this.TextBoxLog.ReadOnly = true;
             this.TextBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TextBoxLog.Size = new System.Drawing.Size(408, 424);
+            this.TextBoxLog.Size = new System.Drawing.Size(408, 449);
             this.TextBoxLog.TabIndex = 3;
             // 
             // TextBoxDevice
@@ -119,7 +121,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 344);
+            this.label4.Location = new System.Drawing.Point(8, 369);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(56, 15);
             this.label4.TabIndex = 7;
@@ -127,7 +129,7 @@
             // 
             // TextBoxMaxSize
             // 
-            this.TextBoxMaxSize.Location = new System.Drawing.Point(103, 341);
+            this.TextBoxMaxSize.Location = new System.Drawing.Point(99, 366);
             this.TextBoxMaxSize.MaxLength = 5;
             this.TextBoxMaxSize.Name = "TextBoxMaxSize";
             this.TextBoxMaxSize.Size = new System.Drawing.Size(104, 23);
@@ -137,7 +139,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 373);
+            this.label5.Location = new System.Drawing.Point(8, 398);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(85, 15);
             this.label5.TabIndex = 9;
@@ -145,7 +147,7 @@
             // 
             // TextBoxBitRate
             // 
-            this.TextBoxBitRate.Location = new System.Drawing.Point(103, 370);
+            this.TextBoxBitRate.Location = new System.Drawing.Point(99, 395);
             this.TextBoxBitRate.Name = "TextBoxBitRate";
             this.TextBoxBitRate.Size = new System.Drawing.Size(104, 23);
             this.TextBoxBitRate.TabIndex = 10;
@@ -184,7 +186,7 @@
             // CheckBoxNoControl
             // 
             this.CheckBoxNoControl.AutoSize = true;
-            this.CheckBoxNoControl.Location = new System.Drawing.Point(102, 241);
+            this.CheckBoxNoControl.Location = new System.Drawing.Point(12, 291);
             this.CheckBoxNoControl.Name = "CheckBoxNoControl";
             this.CheckBoxNoControl.Size = new System.Drawing.Size(83, 19);
             this.CheckBoxNoControl.TabIndex = 14;
@@ -214,7 +216,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 402);
+            this.label6.Location = new System.Drawing.Point(8, 427);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(55, 15);
             this.label6.TabIndex = 17;
@@ -222,7 +224,7 @@
             // 
             // TextBoxMaxFps
             // 
-            this.TextBoxMaxFps.Location = new System.Drawing.Point(103, 399);
+            this.TextBoxMaxFps.Location = new System.Drawing.Point(99, 424);
             this.TextBoxMaxFps.MaxLength = 3;
             this.TextBoxMaxFps.Name = "TextBoxMaxFps";
             this.TextBoxMaxFps.Size = new System.Drawing.Size(104, 23);
@@ -232,7 +234,7 @@
             // CheckBoxPowerOffClose
             // 
             this.CheckBoxPowerOffClose.AutoSize = true;
-            this.CheckBoxPowerOffClose.Location = new System.Drawing.Point(12, 316);
+            this.CheckBoxPowerOffClose.Location = new System.Drawing.Point(12, 341);
             this.CheckBoxPowerOffClose.Name = "CheckBoxPowerOffClose";
             this.CheckBoxPowerOffClose.Size = new System.Drawing.Size(161, 19);
             this.CheckBoxPowerOffClose.TabIndex = 19;
@@ -242,18 +244,40 @@
             // CheckBoxNoPowerOnStart
             // 
             this.CheckBoxNoPowerOnStart.AutoSize = true;
-            this.CheckBoxNoPowerOnStart.Location = new System.Drawing.Point(12, 291);
+            this.CheckBoxNoPowerOnStart.Location = new System.Drawing.Point(12, 316);
             this.CheckBoxNoPowerOnStart.Name = "CheckBoxNoPowerOnStart";
             this.CheckBoxNoPowerOnStart.Size = new System.Drawing.Size(188, 19);
             this.CheckBoxNoPowerOnStart.TabIndex = 20;
             this.CheckBoxNoPowerOnStart.Text = "Don\'t power on device on start";
             this.CheckBoxNoPowerOnStart.UseVisualStyleBackColor = true;
             // 
+            // CheckBoxShowTouches
+            // 
+            this.CheckBoxShowTouches.AutoSize = true;
+            this.CheckBoxShowTouches.Location = new System.Drawing.Point(102, 241);
+            this.CheckBoxShowTouches.Name = "CheckBoxShowTouches";
+            this.CheckBoxShowTouches.Size = new System.Drawing.Size(100, 19);
+            this.CheckBoxShowTouches.TabIndex = 21;
+            this.CheckBoxShowTouches.Text = "Show touches";
+            this.CheckBoxShowTouches.UseVisualStyleBackColor = true;
+            // 
+            // CheckBoxNoKeyRepeat
+            // 
+            this.CheckBoxNoKeyRepeat.AutoSize = true;
+            this.CheckBoxNoKeyRepeat.Location = new System.Drawing.Point(102, 291);
+            this.CheckBoxNoKeyRepeat.Name = "CheckBoxNoKeyRepeat";
+            this.CheckBoxNoKeyRepeat.Size = new System.Drawing.Size(99, 19);
+            this.CheckBoxNoKeyRepeat.TabIndex = 22;
+            this.CheckBoxNoKeyRepeat.Text = "No key repeat";
+            this.CheckBoxNoKeyRepeat.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(633, 463);
+            this.ClientSize = new System.Drawing.Size(633, 488);
+            this.Controls.Add(this.CheckBoxNoKeyRepeat);
+            this.Controls.Add(this.CheckBoxShowTouches);
             this.Controls.Add(this.CheckBoxNoPowerOnStart);
             this.Controls.Add(this.CheckBoxPowerOffClose);
             this.Controls.Add(this.TextBoxMaxFps);
@@ -311,6 +335,8 @@
         private System.Windows.Forms.TextBox TextBoxMaxFps;
         private System.Windows.Forms.CheckBox CheckBoxPowerOffClose;
         private System.Windows.Forms.CheckBox CheckBoxNoPowerOnStart;
+        private System.Windows.Forms.CheckBox CheckBoxShowTouches;
+        private System.Windows.Forms.CheckBox CheckBoxNoKeyRepeat;
     }
 }
 

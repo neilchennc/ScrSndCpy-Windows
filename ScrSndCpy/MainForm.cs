@@ -174,6 +174,10 @@ namespace ScrSndCpy
                     argumentString.Append(" --no-power-on");
                 if (CheckBoxPowerOffClose.Checked)
                     argumentString.Append(" --power-off-on-close");
+                if (CheckBoxShowTouches.Checked)
+                    argumentString.Append(" --show-touches");
+                if (CheckBoxNoKeyRepeat.Checked)
+                    argumentString.Append(" --no-key-repeat");
 
                 // Connect and check state
                 var errorMessage = await Task.Factory.StartNew(() =>
