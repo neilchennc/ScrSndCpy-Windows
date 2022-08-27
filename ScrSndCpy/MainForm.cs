@@ -30,12 +30,12 @@ namespace ScrSndCpy
             InitializeComponent();
         }
 
-        private async void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
             SetDefaultMaxSizeAndFps();
-            await Task.Factory.StartNew(() => { CheckScrcpyVersion(); });
+            CheckScrcpyVersion();
         }
 
         private void SetDefaultMaxSizeAndFps()
@@ -57,31 +57,34 @@ namespace ScrSndCpy
             TextBoxMaxFps.Text = $"{maxFps}";
         }
 
-        private void CheckScrcpyVersion()
+        private async void CheckScrcpyVersion()
         {
-            try
+            await Task.Factory.StartNew(() =>
             {
-                // Check scrcpy version
-                var pCheckScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
-                pCheckScrcpy.Start();
-                string info = pCheckScrcpy.StandardOutput.ReadToEnd();
-                pCheckScrcpy.WaitForExit();
-                DispatchUiAction(() => TextBoxLog.AppendText(info));
-
-                // Start tracking devices
-                deviceMonitor = new DeviceMonitor();
-                deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
-                deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
-                deviceMonitor.Start();
-            }
-            catch
-            {
-                DispatchUiAction(() =>
+                try
                 {
-                    TextBoxLog.AppendText("Failed to check scrcpy version.");
-                    ButtonPlay.Enabled = false;
-                });
-            }
+                    // Check scrcpy version
+                    var pCheckScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
+                    pCheckScrcpy.Start();
+                    string info = pCheckScrcpy.StandardOutput.ReadToEnd();
+                    pCheckScrcpy.WaitForExit();
+                    DispatchUiAction(() => TextBoxLog.AppendText(info));
+
+                    // Start tracking devices
+                    deviceMonitor = new DeviceMonitor();
+                    deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
+                    deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
+                    deviceMonitor.Start();
+                }
+                catch
+                {
+                    DispatchUiAction(() =>
+                    {
+                        TextBoxLog.AppendText("Failed to check scrcpy version.");
+                        ButtonPlay.Enabled = false;
+                    });
+                }
+            });
         }
 
         private void DeviceMonitor_OnDeviceChanged(List<string> devices)
