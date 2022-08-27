@@ -88,7 +88,7 @@
             this.TextBoxLog.Name = "TextBoxLog";
             this.TextBoxLog.ReadOnly = true;
             this.TextBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TextBoxLog.Size = new System.Drawing.Size(370, 424);
+            this.TextBoxLog.Size = new System.Drawing.Size(408, 424);
             this.TextBoxLog.TabIndex = 3;
             // 
             // TextBoxDevice
@@ -253,7 +253,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(595, 463);
+            this.ClientSize = new System.Drawing.Size(633, 463);
             this.Controls.Add(this.CheckBoxNoPowerOnStart);
             this.Controls.Add(this.CheckBoxPowerOffClose);
             this.Controls.Add(this.TextBoxMaxFps);

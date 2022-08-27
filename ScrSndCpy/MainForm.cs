@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace ScrSndCpy
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
             SetDefaultMaxSizeAndFps();
-            CheckScrcpyVersion();
+            CheckAndShowVersionInfo();
         }
 
         private void SetDefaultMaxSizeAndFps()
@@ -57,7 +58,7 @@ namespace ScrSndCpy
             TextBoxMaxFps.Text = $"{maxFps}";
         }
 
-        private async void CheckScrcpyVersion()
+        private async void CheckAndShowVersionInfo()
         {
             await Task.Factory.StartNew(() =>
             {
@@ -68,7 +69,18 @@ namespace ScrSndCpy
                     pCheckScrcpy.Start();
                     string info = pCheckScrcpy.StandardOutput.ReadToEnd();
                     pCheckScrcpy.WaitForExit();
-                    DispatchUiAction(() => TextBoxLog.AppendText(info));
+                    DispatchUiAction(() =>
+                    {
+                        // ScrSndCpy version
+                        var version = Assembly.GetExecutingAssembly().GetName().Version;
+                        TextBoxLog.AppendText($"ScrSndCpy {version.Major}.{version.Minor} <https://github.com/neilchennc/ScrSndCpy-Windows>");
+                        TextBoxLog.AppendText(Environment.NewLine);
+                        // Sndcpy version
+                        TextBoxLog.AppendText($"sndcpy 1.1 <https://github.com/rom1v/sndcpy>");
+                        TextBoxLog.AppendText(Environment.NewLine);
+                        // Srccpy version
+                        TextBoxLog.AppendText(info);
+                    });
 
                     // Start tracking devices
                     deviceMonitor = new DeviceMonitor();
