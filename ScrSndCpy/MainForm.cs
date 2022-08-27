@@ -34,8 +34,27 @@ namespace ScrSndCpy
         {
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
-
+            SetDefaultMaxSizeAndFps();
             await Task.Factory.StartNew(() => { CheckScrcpyVersion(); });
+        }
+
+        private void SetDefaultMaxSizeAndFps()
+        {
+            var deviceMode = new Display.DeviceMode();
+            int maxSize = 0;
+            int maxFps = 0;
+            foreach (var screen in Screen.AllScreens)
+            {
+                if (Display.EnumDisplaySettings(screen.DeviceName, Display.ENUM_CURRENT_SETTINGS, ref deviceMode) != 0)
+                {
+                    Debug.WriteLine($"screen: {screen.DeviceName}, width: {deviceMode.dmPelsWidth}, height: {deviceMode.dmPelsHeight}, frequency: {deviceMode.dmDisplayFrequency}");
+                    maxSize = Math.Max(Math.Max(deviceMode.dmPelsWidth, deviceMode.dmPelsHeight), maxSize);
+                    maxFps = Math.Max(deviceMode.dmDisplayFrequency, maxFps);
+                }
+            }
+            Debug.WriteLine($"Max Size: {maxSize}, Max FPS: {maxFps}");
+            TextBoxMaxSize.Text = $"{maxSize}";
+            TextBoxMaxFps.Text = $"{maxFps}";
         }
 
         private void CheckScrcpyVersion()
