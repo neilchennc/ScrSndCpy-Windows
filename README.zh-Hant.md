@@ -34,15 +34,17 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 ## 如何使用
 
-在使用ScrSndCpy之前，你的Android手機必須先[啟用偵錯模式](https://developer.android.com/studio/command-line/adb.html#Enabling)，或者可以去找[YouTube教學影片](https://www.youtube.com/results?search_query=android+usb+%E5%81%B5%E9%8C%AF%E6%A8%A1%E5%BC%8F)
+### 前置準備
 
-### 透過USB連接
+- 在使用ScrSndCpy之前，你的Android手機必須先[啟用偵錯模式](https://developer.android.com/studio/command-line/adb.html#Enabling)，或者可以去找[YouTube教學影片](https://www.youtube.com/results?search_query=android+usb+%E5%81%B5%E9%8C%AF%E6%A8%A1%E5%BC%8F)
 
 - 下載最新的ScrSndCpy並解壓縮
 
 - 執行**ScrSndCpy.exe**
 
-- 將Android裝置插入USB線，連接電腦
+### 方式1：透過USB連接
+
+- 將Android裝置插入USB，並與連接電腦
 
 - 此時你的Android裝置會跳出一個USB偵錯的確認對話框，按下允許按鈕
 
@@ -50,11 +52,23 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 - 點擊**Play**按鈕
 
-### 透過無線方式連接
+### 方式2：透過無線連接
 
-- 下載最新的ScrSndCpy並解壓縮
+#### 設定 (**僅第一次**)
 
-- 執行**ScrSndCpy.exe**
+執行以下步驟，讓你的手機開啟tcp連接埠
+
+- 將你的手機插入USB與電腦連接
+
+- 執行下面的指令來開啟tcp連接埠
+
+  ```
+  adb.exe tcpip 5555
+  ```
+
+- 移除手機USB連接
+
+#### 連線
 
 - Android裝置連接到Wi-Fi，注意你的電腦也必須連到同樣的網路（網段）
 

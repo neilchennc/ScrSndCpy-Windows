@@ -34,27 +34,41 @@ Both of them do NOT require any root access.
 
 ## How to use
 
-Your Android devices must [enable debugging mode](https://developer.android.com/studio/command-line/adb.html#Enabling) before using ScrSndCpy, or find [tutorial videos on YouTube](https://www.youtube.com/results?search_query=android+enable+usb+debugging).
+### Preparation
 
-### Connect via USB
+- Your Android devices must [enable debugging mode](https://developer.android.com/studio/command-line/adb.html#Enabling) before using ScrSndCpy, or find [tutorial videos on YouTube](https://www.youtube.com/results?search_query=android+enable+usb+debugging).
 
 - Download latest ScrSndCpy and extract it
 
 - Run **ScrSndCpy.exe**
 
-- Plug your Android devices
+### Method 1: Connect via USB
+
+- Plug the device into a USB port on your computer
 
 - Your device will popup a USB debugging confirmation dialog, click "Allow" button
 
-- In ScrSndCpy, select a device in the ScrSndCpy
+- In ScrSndCpy, select a device from the list
 
 - Click **Play** button
 
-### Connect via Wi-Fi (TCP/IP)
+### Method 2: Connect via Wi-Fi (TCP/IP)
 
-- Download latest ScrSndCpy and extract it
+#### Setup (**only for the first time**)
 
-- Run **ScrSndCpy.exe**
+You have to enable tcp port on your device with following steps
+
+- Plug the device into a USB port on your computer
+
+- Enable adb over TCP/IP on your device with command:
+
+  ```
+  adb.exe tcpip 5555
+  ```
+
+- Unplug your device
+
+#### Connect
 
 - Connect to Wi-Fi access point, note that your PC must connect to the same access point (network segment)
 
