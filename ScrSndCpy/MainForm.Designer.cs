@@ -151,7 +151,7 @@
             this.TextBoxBitRate.Name = "TextBoxBitRate";
             this.TextBoxBitRate.Size = new System.Drawing.Size(104, 23);
             this.TextBoxBitRate.TabIndex = 10;
-            this.TextBoxBitRate.Text = "32";
+            this.TextBoxBitRate.Text = "16";
             // 
             // CheckBoxBorderless
             // 
