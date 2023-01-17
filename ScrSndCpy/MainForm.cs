@@ -26,6 +26,8 @@ namespace ScrSndCpy
         private DeviceMonitor deviceMonitor;
         private readonly BindingList<string> connectedDevices = new BindingList<string>();
 
+        private readonly IPreference Preference = new IniFilePreference();
+
         public MainForm()
         {
             InitializeComponent();
@@ -36,6 +38,7 @@ namespace ScrSndCpy
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
             SetDefaultMaxSizeAndFps();
+            LoadPreference();
             CheckAndShowVersionInfo();
         }
 
@@ -56,6 +59,35 @@ namespace ScrSndCpy
             Debug.WriteLine($"Max Size: {maxSize}, Max FPS: {maxFps}");
             TextBoxMaxSize.Text = $"{maxSize}";
             TextBoxMaxFps.Text = $"{maxFps}";
+        }
+
+        private void LoadPreference()
+        {
+            var preference = Preference.LoadPreference();
+
+            if (preference.MaxSize > 0)
+            {
+                TextBoxMaxSize.Text = $"{preference.MaxSize}";
+            }
+            if (preference.Bitrate > 0)
+            {
+                TextBoxBitRate.Text = $"{preference.Bitrate}";
+            }
+            if (preference.MaxFps > 0)
+            {
+                TextBoxMaxFps.Text = $"{preference.MaxFps}";
+            }
+
+            CheckBoxBorderless.Checked = preference.Borderless;
+            CheckBoxAlwaysOnTop.Checked = preference.AlwaysOnTop;
+            CheckBoxFullscreen.Checked = preference.Fullscreen;
+            CheckBoxNoControl.Checked = preference.NoControl;
+            CheckBoxStayAwake.Checked = preference.StayAwake;
+            CheckBoxTurnScreenOff.Checked = preference.TurnScreenOff;
+            CheckBoxNoPowerOnStart.Checked = preference.NoPowerOn;
+            CheckBoxPowerOffClose.Checked = preference.PowerOffOnClose;
+            CheckBoxShowTouches.Checked = preference.ShowTouches;
+            CheckBoxNoKeyRepeat.Checked = preference.NoKeyRepeat;
         }
 
         private async void CheckAndShowVersionInfo()
@@ -133,14 +165,37 @@ namespace ScrSndCpy
             deviceMonitor.Start();
         }
 
+        private void SavePreference()
+        {
+            var attribute = new PreferenceAttribute();
+            int.TryParse(TextBoxMaxSize.Text, out attribute.MaxSize);
+            int.TryParse(TextBoxBitRate.Text, out attribute.Bitrate);
+            int.TryParse(TextBoxMaxFps.Text, out attribute.MaxFps);
+            attribute.Borderless = CheckBoxBorderless.Checked;
+            attribute.AlwaysOnTop = CheckBoxAlwaysOnTop.Checked;
+            attribute.Fullscreen = CheckBoxFullscreen.Checked;
+            attribute.NoControl = CheckBoxNoControl.Checked;
+            attribute.StayAwake = CheckBoxStayAwake.Checked;
+            attribute.TurnScreenOff = CheckBoxTurnScreenOff.Checked;
+            attribute.NoPowerOn = CheckBoxNoPowerOnStart.Checked;
+            attribute.PowerOffOnClose = CheckBoxPowerOffClose.Checked;
+            attribute.ShowTouches = CheckBoxShowTouches.Checked;
+            attribute.NoKeyRepeat = CheckBoxNoKeyRepeat.Checked;
+            Preference.SavePreference(attribute);
+        }
+
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            // Stop device monitoring
             if (deviceMonitor != null)
             {
                 deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
                 deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
                 deviceMonitor.Stop();
             }
+
+            // Save current preference
+            SavePreference();
         }
 
         private async void ButtonPlay_Click(object sender, EventArgs e)
