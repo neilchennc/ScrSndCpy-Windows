@@ -20,7 +20,6 @@ namespace ScrSndCpy
     {
         private const string ADB_FILE = "adb.exe";
         private const string SCRCPY_FILE = "scrcpy.exe";
-        private const string SNDCPY_FILE = "sndcpy-direct.bat";
 
         private TaskScheduler uiContext;
         private DeviceMonitor deviceMonitor;
@@ -106,9 +105,6 @@ namespace ScrSndCpy
                         // ScrSndCpy version
                         var version = Assembly.GetExecutingAssembly().GetName().Version;
                         TextBoxLog.AppendText($"ScrSndCpy {version.Major}.{version.Minor} <https://github.com/neilchennc/ScrSndCpy-Windows>");
-                        TextBoxLog.AppendText(Environment.NewLine);
-                        // Sndcpy version
-                        TextBoxLog.AppendText($"sndcpy 1.1 <https://github.com/rom1v/sndcpy>");
                         TextBoxLog.AppendText(Environment.NewLine);
                         // Srccpy version
                         TextBoxLog.AppendText(info);
@@ -210,7 +206,7 @@ namespace ScrSndCpy
                 if (TextBoxMaxSize.Text.Trim().Length > 0)
                     argumentString.Append($" --max-size={TextBoxMaxSize.Text}");
                 if (TextBoxBitRate.Text.Trim().Length > 0)
-                    argumentString.Append($" --bit-rate={TextBoxBitRate.Text}M");
+                    argumentString.Append($" --video-bit-rate={TextBoxBitRate.Text}M");
                 if (TextBoxMaxFps.Text.Trim().Length > 0)
                     argumentString.Append($" --max-fps={TextBoxMaxFps.Text}");
                 if (CheckBoxBorderless.Checked)
@@ -302,42 +298,26 @@ namespace ScrSndCpy
                     while (!scrcpy.HasExited)
                     {
                         var message = scrcpy.StandardOutput.ReadLine();
-                        DispatchUiAction(() =>
+                        if (message != null)
                         {
-                            TextBoxLog.AppendText(message);
-                            TextBoxLog.AppendText(Environment.NewLine);
-                        });
+                            DispatchUiAction(() =>
+                            {
+                                TextBoxLog.AppendText(message);
+                                TextBoxLog.AppendText(Environment.NewLine);
+                            });
+                        }
                     }
 
-                    TextBoxLog.AppendText("scrcpy stopped.");
-                    TextBoxLog.AppendText(Environment.NewLine);
+                    DispatchUiAction(() =>
+                    {
+                        TextBoxLog.AppendText("scrcpy stopped.");
+                        TextBoxLog.AppendText(Environment.NewLine);
+                    });
 
                     // Terminate sndcpy
                     var stopSndcpy = ProcessHelper.Create(ADB_FILE, $"-s {serial} shell am force-stop com.rom1v.sndcpy");
                     stopSndcpy.Start();
                     stopSndcpy.WaitForExit();
-                });
-
-                // Start sndcpy
-                TextBoxLog.AppendText($"Run command: {SNDCPY_FILE} {serial}");
-                TextBoxLog.AppendText(Environment.NewLine);
-                var sndcpyTask = Task.Factory.StartNew(() =>
-                {
-                    var p = ProcessHelper.Create(SNDCPY_FILE, serial, redirectStandardOutput: true);
-                    p.Start();
-
-                    while (!p.HasExited)
-                    {
-                        var message = p.StandardOutput.ReadLine();
-                        DispatchUiAction(() =>
-                        {
-                            TextBoxLog.AppendText(message);
-                            TextBoxLog.AppendText(Environment.NewLine);
-                        });
-                    }
-
-                    TextBoxLog.AppendText("sndcpy stopped.");
-                    TextBoxLog.AppendText(Environment.NewLine);
                 });
             }
         }
