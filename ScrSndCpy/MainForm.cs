@@ -313,11 +313,6 @@ namespace ScrSndCpy
                         TextBoxLog.AppendText("scrcpy stopped.");
                         TextBoxLog.AppendText(Environment.NewLine);
                     });
-
-                    // Terminate sndcpy
-                    var stopSndcpy = ProcessHelper.Create(ADB_FILE, $"-s {serial} shell am force-stop com.rom1v.sndcpy");
-                    stopSndcpy.Start();
-                    stopSndcpy.WaitForExit();
                 });
             }
         }
