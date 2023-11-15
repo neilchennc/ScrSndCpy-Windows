@@ -99,7 +99,7 @@ namespace ScrSndCpy
 
                 // ScrSndCpy version
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
-                messageBuilder.AppendLine($"ScrSndCpy {version.Major}.{version.Minor} <{SCRSNDCPY_GITHUB_URL}>");
+                messageBuilder.AppendLine($"ScrSndCpy v{version.Major}.{version.Minor} <{SCRSNDCPY_GITHUB_URL}>");
                 messageBuilder.AppendLine();
 
                 try

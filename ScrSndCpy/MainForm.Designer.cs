@@ -84,13 +84,16 @@
             // 
             // TextBoxLog
             // 
+            this.TextBoxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxLog.BackColor = System.Drawing.SystemColors.Window;
             this.TextBoxLog.Location = new System.Drawing.Point(213, 27);
             this.TextBoxLog.Multiline = true;
             this.TextBoxLog.Name = "TextBoxLog";
             this.TextBoxLog.ReadOnly = true;
             this.TextBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.TextBoxLog.Size = new System.Drawing.Size(408, 449);
+            this.TextBoxLog.Size = new System.Drawing.Size(414, 449);
             this.TextBoxLog.TabIndex = 3;
             // 
             // TextBoxDevice
@@ -275,7 +278,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(633, 488);
+            this.ClientSize = new System.Drawing.Size(639, 488);
             this.Controls.Add(this.CheckBoxNoKeyRepeat);
             this.Controls.Add(this.CheckBoxShowTouches);
             this.Controls.Add(this.CheckBoxNoPowerOnStart);
