@@ -94,34 +94,36 @@ namespace ScrSndCpy
         {
             await Task.Factory.StartNew(() =>
             {
+                var messageBuilder = new StringBuilder(256);
+                var isSuccess = true;
+
+                // ScrSndCpy version
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                messageBuilder.AppendLine($"ScrSndCpy {version.Major}.{version.Minor} <{SCRSNDCPY_GITHUB_URL}>");
+                messageBuilder.AppendLine();
+
                 try
                 {
                     // Check scrcpy version
                     var pScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
                     pScrcpy.Start();
-                    string scrcpyInfo = pScrcpy.StandardOutput.ReadToEnd();
+                    messageBuilder.AppendLine(pScrcpy.StandardOutput.ReadToEnd());
                     pScrcpy.WaitForExit();
+                }
+                catch
+                {
+                    messageBuilder.AppendLine("Failed to check scrcpy version.");
+                    messageBuilder.AppendLine();
+                    isSuccess = false;
+                }
 
+                try
+                {
                     // Check adb version
                     var pAdb = ProcessHelper.Create(ADB_FILE, "--version", redirectStandardOutput: true);
                     pAdb.Start();
-                    string adbInfo = pAdb.StandardOutput.ReadToEnd();
+                    messageBuilder.AppendLine(pAdb.StandardOutput.ReadToEnd());
                     pAdb.WaitForExit();
-
-                    DispatchUiAction(() =>
-                    {
-                        // ScrSndCpy version
-                        var version = Assembly.GetExecutingAssembly().GetName().Version;
-                        TextBoxLog.AppendText($"ScrSndCpy {version.Major}.{version.Minor} <{SCRSNDCPY_GITHUB_URL}>");
-                        TextBoxLog.AppendText(Environment.NewLine);
-                        TextBoxLog.AppendText(Environment.NewLine);
-                        // Srccpy version
-                        TextBoxLog.AppendText(scrcpyInfo);
-                        TextBoxLog.AppendText(Environment.NewLine);
-                        // ADB version
-                        TextBoxLog.AppendText(adbInfo);
-                        TextBoxLog.AppendText(Environment.NewLine);
-                    });
 
                     // Start tracking devices
                     deviceMonitor = new DeviceMonitor();
@@ -131,12 +133,17 @@ namespace ScrSndCpy
                 }
                 catch
                 {
-                    DispatchUiAction(() =>
-                    {
-                        TextBoxLog.AppendText("Failed to check scrcpy version.");
-                        ButtonPlay.Enabled = false;
-                    });
+                    messageBuilder.AppendLine("Failed to check adb version.");
+                    messageBuilder.AppendLine();
+                    isSuccess = false;
                 }
+
+                // Show versions and enable/disable button
+                DispatchUiAction(() =>
+                {
+                    ButtonPlay.Enabled = isSuccess;
+                    TextBoxLog.AppendText(messageBuilder.ToString());
+                });
             });
         }
 
