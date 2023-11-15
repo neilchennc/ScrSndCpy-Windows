@@ -18,6 +18,7 @@ namespace ScrSndCpy
 {
     public partial class MainForm : Form
     {
+        private const string SCRSNDCPY_GITHUB_URL = "https://github.com/neilchennc/ScrSndCpy-Windows";
         private const string ADB_FILE = "adb.exe";
         private const string SCRCPY_FILE = "scrcpy.exe";
 
@@ -96,18 +97,30 @@ namespace ScrSndCpy
                 try
                 {
                     // Check scrcpy version
-                    var pCheckScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
-                    pCheckScrcpy.Start();
-                    string info = pCheckScrcpy.StandardOutput.ReadToEnd();
-                    pCheckScrcpy.WaitForExit();
+                    var pScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
+                    pScrcpy.Start();
+                    string scrcpyInfo = pScrcpy.StandardOutput.ReadToEnd();
+                    pScrcpy.WaitForExit();
+
+                    // Check adb version
+                    var pAdb = ProcessHelper.Create(ADB_FILE, "--version", redirectStandardOutput: true);
+                    pAdb.Start();
+                    string adbInfo = pAdb.StandardOutput.ReadToEnd();
+                    pAdb.WaitForExit();
+
                     DispatchUiAction(() =>
                     {
                         // ScrSndCpy version
                         var version = Assembly.GetExecutingAssembly().GetName().Version;
-                        TextBoxLog.AppendText($"ScrSndCpy {version.Major}.{version.Minor} <https://github.com/neilchennc/ScrSndCpy-Windows>");
+                        TextBoxLog.AppendText($"ScrSndCpy {version.Major}.{version.Minor} <{SCRSNDCPY_GITHUB_URL}>");
+                        TextBoxLog.AppendText(Environment.NewLine);
                         TextBoxLog.AppendText(Environment.NewLine);
                         // Srccpy version
-                        TextBoxLog.AppendText(info);
+                        TextBoxLog.AppendText(scrcpyInfo);
+                        TextBoxLog.AppendText(Environment.NewLine);
+                        // ADB version
+                        TextBoxLog.AppendText(adbInfo);
+                        TextBoxLog.AppendText(Environment.NewLine);
                     });
 
                     // Start tracking devices
