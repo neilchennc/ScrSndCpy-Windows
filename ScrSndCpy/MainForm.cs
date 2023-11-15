@@ -94,7 +94,7 @@ namespace ScrSndCpy
         {
             await Task.Factory.StartNew(() =>
             {
-                var messageBuilder = new StringBuilder(256);
+                var messageBuilder = new StringBuilder(512);
                 var isSuccess = true;
 
                 // ScrSndCpy version
