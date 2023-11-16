@@ -65,18 +65,14 @@ namespace ScrSndCpy
             Debug.WriteLine("Parsing data:");
             Debug.WriteLine(responseData);
 
-            if (bytes == 4)
+            if ("OKAY" == responseData)
             {
-                if (responseData.Equals("OKAY"))
-                {
-                    return;
-                }
-
-                if (responseData.Equals("0000"))
-                {
-                    OnDeviceChanged?.Invoke(new List<string>(0));
-                    return;
-                }
+                return;
+            }
+            if ("0000" == responseData || "OKAY0000" == responseData)
+            {
+                OnDeviceChanged?.Invoke(new List<string>(0));
+                return;
             }
 
             int index = 0;
