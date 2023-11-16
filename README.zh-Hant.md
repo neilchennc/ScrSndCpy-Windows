@@ -26,7 +26,7 @@ Windows圖形化介面的程式，透過執行[scrcpy](https://github.com/Genymo
 
 - [ScrSndCpy-v1.3.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.3/ScrSndCpy-v1.3.zip)
 
-  SHA-256: 4719ca4c0886c7aec510666d41733bf7c07054f89160bdd448e70f60c1718d9a
+  SHA-256: f2cb4a593155fea9b38a4199a59b8c2b43bf224de8410d417ab33a0a2d6df5c9
 
 ## 使用說明
 
