@@ -4,33 +4,29 @@
 
 [繁體中文](README.zh-Hant.md)
 
-A Windows GUI application executes both [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) simultaneously, used to display screen, sound and control Android phones or tablets.
+A Windows GUI application to dispaly screen, audio and control your Android devices on PC by executing [scrcpy](https://github.com/Genymobile/scrcpy) (passing commands and parameters to [scrcpy](https://github.com/Genymobile/scrcpy)).
 
 ![Screenshot](screenshots/scrsndcpy-screen.png "Screenshot")
 
 *Looking for Linux version? [Click here](https://github.com/neilchennc/ScrSndCpy-Linux)*
 
-## About scrcpy and sndcpy
+## About scrcpy
 
 [scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy) is an application provides display and control of Android devices connected via USB or over TCP/IP (requires at least Android 5.0) which developed by Genymobile.
 
-[sndcpy](https://github.com/rom1v/sndcpy) (Sound Copy) is an application forwards audio from an Android device to the computer (requires at least Android 10, and [VLC](https://www.videolan.org/) must be installed on the PC) which developed by rom1v.
-
-Both of them do NOT require any root access.
+It does NOT require any root access.
 
 ## Requirements
 
 - Windows 7/8/10/11
 
-- Android 5.0+ (or Android 10+ if you want audio output)
-
-- [VLC](https://www.videolan.org/) installed (install on PC, for audio output)
+- Android 5.0+ (Audio forwarding must Android 11+)
 
 ## Download
 
-- [ScrSndCpy-v1.2.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.2/ScrSndCpy-v1.2.zip)
+- [ScrSndCpy-v1.3.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.3/ScrSndCpy-v1.3.zip)
 
-  SHA-256: ef0180bf8ad65f1d47eebae6407ccd4c48bc8772ae2df61bc499c0475e119727
+  SHA-256: 4719ca4c0886c7aec510666d41733bf7c07054f89160bdd448e70f60c1718d9a
 
 ## How to use
 
@@ -80,10 +76,24 @@ You have to enable tcp port on your device with following steps
 
 - Click **Play** button again
 
-## Shortcuts (references from scrcpy 1.24)
+## Shortcuts (references from [scrcpy 2.2 shortcut](https://github.com/Genymobile/scrcpy/blob/master/doc/shortcuts.md))
+
+Actions can be performed on the scrcpy window using keyboard and mouse
+shortcuts.
 
 In the following list, <kbd>MOD</kbd> is the shortcut modifier. By default, it's
 (left) <kbd>Alt</kbd> or (left) <kbd>Super</kbd>.
+
+It can be changed using `--shortcut-mod`. Possible keys are `lctrl`, `rctrl`,
+`lalt`, `ralt`, `lsuper` and `rsuper`. For example:
+
+```bash
+# use RCtrl for shortcuts
+scrcpy --shortcut-mod=rctrl
+
+# use either LCtrl+LAlt or LSuper for shortcuts
+scrcpy --shortcut-mod=lctrl+lalt,lsuper
+```
 
 _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
 
@@ -97,7 +107,7 @@ _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
  | Resize window to 1:1 (pixel-perfect)        | <kbd>MOD</kbd>+<kbd>g</kbd>
  | Resize window to remove black borders       | <kbd>MOD</kbd>+<kbd>w</kbd> \| _Double-left-click¹_
  | Click on `HOME`                             | <kbd>MOD</kbd>+<kbd>h</kbd> \| _Middle-click_
- | Click on `BACK`                             | <kbd>MOD</kbd>+<kbd>b</kbd> \| _Right-click²_
+ | Click on `BACK`                             | <kbd>MOD</kbd>+<kbd>b</kbd> \| <kbd>MOD</kbd>+<kbd>Backspace</kbd> \| _Right-click²_
  | Click on `APP_SWITCH`                       | <kbd>MOD</kbd>+<kbd>s</kbd> \| _4th-click³_
  | Click on `MENU` (unlock screen)⁴            | <kbd>MOD</kbd>+<kbd>m</kbd>
  | Click on `VOLUME_UP`                        | <kbd>MOD</kbd>+<kbd>↑</kbd> _(up)_
@@ -117,7 +127,7 @@ _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
  | Enable/disable FPS counter (on stdout)      | <kbd>MOD</kbd>+<kbd>i</kbd>
  | Pinch-to-zoom                               | <kbd>Ctrl</kbd>+_click-and-move_
  | Drag & drop APK file                        | Install APK from computer
- | Drag & drop non-APK file                    | Push file to device
+ | Drag & drop non-APK file                    | [Push file to device](https://github.com/Genymobile/scrcpy/blob/master/doc/control.md#push-file-to-device)
 
 _¹Double-click on black borders to remove them._  
 _²Right-click turns the screen on if it was off, presses BACK otherwise._  
@@ -125,12 +135,24 @@ _³4th and 5th mouse buttons, if your mouse has them._
 _⁴For react-native apps in development, `MENU` triggers development menu._  
 _⁵Only on Android >= 7._
 
-You can check out [scrcpy](https://github.com/Genymobile/scrcpy) and [sndcpy](https://github.com/rom1v/sndcpy) for more introductions, functions and controls.
+Shortcuts with repeated keys are executed by releasing and pressing the key a
+second time. For example, to execute "Expand settings panel":
+
+ 1. Press and keep pressing <kbd>MOD</kbd>.
+ 2. Then double-press <kbd>n</kbd>.
+ 3. Finally, release <kbd>MOD</kbd>.
+
+All <kbd>Ctrl</kbd>+_key_ shortcuts are forwarded to the device, so they are
+handled by the active application.
+
+For more informations, see [scrcpy](https://github.com/Genymobile/scrcpy).
 
 ## Development environment
 
 - OS: Windows 10
 
 - Language: C#
+
+- Framework: .NET Framework 4.7.2
 
 - IDE: Visual Studio

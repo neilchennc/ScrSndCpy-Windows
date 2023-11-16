@@ -4,35 +4,31 @@
 
 [English](README.md)
 
-Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/Genymobile/scrcpy)和[sndcpy](https://github.com/rom1v/sndcpy)，用來顯示畫面、聲音與控制Android手機或平板，
+Windows圖形化介面的程式，透過執行[scrcpy](https://github.com/Genymobile/scrcpy)在你的電腦上顯示畫面跟聲音輸出，並可使用鍵盤滑鼠來控制Android裝置，
 
 ![Screenshot](screenshots/scrsndcpy-screen.png "Screenshot")
 
 *想找Linux版本？[點我](https://github.com/neilchennc/ScrSndCpy-Linux)*
 
-## 關於scrcpy與sndcpy
+## 關於scrcpy
 
 [scrcpy](https://github.com/Genymobile/scrcpy) (Screen Copy)是由Genymobile開發的程式，可以透過USB或是網路（TCP/IP）來顯示或控制Android裝置（至少要Android 5.0以上）。
 
-[sndcpy](https://github.com/rom1v/sndcpy) (Sound Copy)是由rom1v開發的程式，可以透過USB或是網路（TCP/IP）將Android裝置的聲音傳到電腦播放（至少要Android 10以上，電腦需安裝[VLC](https://www.videolan.org/)才能播放聲音）。
-
-兩個皆不需要root權限。
+此功能不需要root權限。
 
 ## 需求
 
 - Windows 7/8/10/11
 
-- Android 5.0以上（如果想要聲音輸出，則要Android 10以上）
-
-- 安裝[VLC](https://www.videolan.org/)（安裝在電腦，用來播放聲音）
+- Android 5.0以上（如果想要聲音輸出，則必須在Android 11以上）
 
 ## 下載
 
-- [ScrSndCpy-v1.2.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.2/ScrSndCpy-v1.2.zip)
+- [ScrSndCpy-v1.3.zip](https://github.com/neilchennc/ScrSndCpy-Windows/releases/download/v1.3/ScrSndCpy-v1.3.zip)
 
-  SHA-256: ef0180bf8ad65f1d47eebae6407ccd4c48bc8772ae2df61bc499c0475e119727
+  SHA-256: 4719ca4c0886c7aec510666d41733bf7c07054f89160bdd448e70f60c1718d9a
 
-## 如何使用
+## 使用說明
 
 ### 前置準備
 
@@ -80,10 +76,24 @@ Windows圖形化介面的程式，可以同時執行[scrcpy](https://github.com/
 
 - 再次點擊**Play**按鈕
 
-## 快捷鍵（參考自scrcpy 1.24）
+## 快捷鍵（參考自scrcpy 2.2）
+
+Actions can be performed on the scrcpy window using keyboard and mouse
+shortcuts.
 
 In the following list, <kbd>MOD</kbd> is the shortcut modifier. By default, it's
 (left) <kbd>Alt</kbd> or (left) <kbd>Super</kbd>.
+
+It can be changed using `--shortcut-mod`. Possible keys are `lctrl`, `rctrl`,
+`lalt`, `ralt`, `lsuper` and `rsuper`. For example:
+
+```bash
+# use RCtrl for shortcuts
+scrcpy --shortcut-mod=rctrl
+
+# use either LCtrl+LAlt or LSuper for shortcuts
+scrcpy --shortcut-mod=lctrl+lalt,lsuper
+```
 
 _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
 
@@ -97,7 +107,7 @@ _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
  | Resize window to 1:1 (pixel-perfect)        | <kbd>MOD</kbd>+<kbd>g</kbd>
  | Resize window to remove black borders       | <kbd>MOD</kbd>+<kbd>w</kbd> \| _Double-left-click¹_
  | Click on `HOME`                             | <kbd>MOD</kbd>+<kbd>h</kbd> \| _Middle-click_
- | Click on `BACK`                             | <kbd>MOD</kbd>+<kbd>b</kbd> \| _Right-click²_
+ | Click on `BACK`                             | <kbd>MOD</kbd>+<kbd>b</kbd> \| <kbd>MOD</kbd>+<kbd>Backspace</kbd> \| _Right-click²_
  | Click on `APP_SWITCH`                       | <kbd>MOD</kbd>+<kbd>s</kbd> \| _4th-click³_
  | Click on `MENU` (unlock screen)⁴            | <kbd>MOD</kbd>+<kbd>m</kbd>
  | Click on `VOLUME_UP`                        | <kbd>MOD</kbd>+<kbd>↑</kbd> _(up)_
@@ -117,7 +127,7 @@ _<kbd>[Super]</kbd> is typically the <kbd>Windows</kbd> or <kbd>Cmd</kbd> key._
  | Enable/disable FPS counter (on stdout)      | <kbd>MOD</kbd>+<kbd>i</kbd>
  | Pinch-to-zoom                               | <kbd>Ctrl</kbd>+_click-and-move_
  | Drag & drop APK file                        | Install APK from computer
- | Drag & drop non-APK file                    | Push file to device
+ | Drag & drop non-APK file                    | [Push file to device](https://github.com/Genymobile/scrcpy/blob/master/doc/control.md#push-file-to-device)
 
 _¹Double-click on black borders to remove them._  
 _²Right-click turns the screen on if it was off, presses BACK otherwise._  
@@ -125,4 +135,24 @@ _³4th and 5th mouse buttons, if your mouse has them._
 _⁴For react-native apps in development, `MENU` triggers development menu._  
 _⁵Only on Android >= 7._
 
-你可以到[scrcpy](https://github.com/Genymobile/scrcpy)或[sndcpy](https://github.com/rom1v/sndcpy)查看更多它們的詳細介紹、操作、功能等
+Shortcuts with repeated keys are executed by releasing and pressing the key a
+second time. For example, to execute "Expand settings panel":
+
+ 1. Press and keep pressing <kbd>MOD</kbd>.
+ 2. Then double-press <kbd>n</kbd>.
+ 3. Finally, release <kbd>MOD</kbd>.
+
+All <kbd>Ctrl</kbd>+_key_ shortcuts are forwarded to the device, so they are
+handled by the active application.
+
+可以到[scrcpy](https://github.com/Genymobile/scrcpy)查看更多它們的詳細介紹、操作、功能等
+
+## 開發環境
+
+- OS: Windows 10
+
+- Language: C#
+
+- Framework: .NET Framework 4.7.2
+
+- IDE: Visual Studio
