@@ -23,10 +23,12 @@ namespace ScrSndCpy
         private const string SCRCPY_FILE = "scrcpy.exe";
 
         private TaskScheduler uiContext;
-        private readonly IDeviceMonitor deviceMonitor = new DeviceMonitor();
+
         private readonly BindingList<string> connectedDevices = new BindingList<string>();
 
-        private readonly IPreference Preference = new IniFilePreference();
+        private readonly IDeviceMonitor deviceMonitor = new DeviceMonitor();
+
+        private readonly IPreference preference = new IniFilePreference();
 
         public MainForm()
         {
@@ -37,12 +39,12 @@ namespace ScrSndCpy
         {
             uiContext = TaskScheduler.FromCurrentSynchronizationContext();
             ListBoxDevices.DataSource = connectedDevices;
-            SetDefaultMaxSizeAndFps();
+            SetDefaultValues();
             LoadPreference();
-            CheckAndShowVersionInfo();
+            ShowVersionAndRunAdb();
         }
 
-        private void SetDefaultMaxSizeAndFps()
+        private void SetDefaultValues()
         {
             var deviceMode = new Display.DeviceMode();
             int maxSize = 0;
@@ -63,7 +65,7 @@ namespace ScrSndCpy
 
         private void LoadPreference()
         {
-            var preference = Preference.LoadPreference();
+            var preference = this.preference.LoadPreference();
 
             if (preference.MaxSize > 0)
             {
@@ -90,7 +92,7 @@ namespace ScrSndCpy
             CheckBoxNoKeyRepeat.Checked = preference.NoKeyRepeat;
         }
 
-        private async void CheckAndShowVersionInfo()
+        private async void ShowVersionAndRunAdb()
         {
             await Task.Factory.StartNew(() =>
             {
@@ -104,7 +106,7 @@ namespace ScrSndCpy
 
                 try
                 {
-                    // Check scrcpy version
+                    // scrcpy version
                     var pScrcpy = ProcessHelper.Create(SCRCPY_FILE, "-v", redirectStandardOutput: true);
                     pScrcpy.Start();
                     messageBuilder.AppendLine(pScrcpy.StandardOutput.ReadToEnd());
@@ -119,16 +121,14 @@ namespace ScrSndCpy
 
                 try
                 {
-                    // Check adb version
+                    // adb version
                     var pAdb = ProcessHelper.Create(ADB_FILE, "--version", redirectStandardOutput: true);
                     pAdb.Start();
                     messageBuilder.AppendLine(pAdb.StandardOutput.ReadToEnd());
                     pAdb.WaitForExit();
 
                     // Start tracking devices
-                    deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
-                    deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
-                    deviceMonitor.Start();
+                    StartDeviceMonitor();
                 }
                 catch
                 {
@@ -144,6 +144,20 @@ namespace ScrSndCpy
                     TextBoxLog.AppendText(messageBuilder.ToString());
                 });
             });
+        }
+
+        private void StartDeviceMonitor()
+        {
+            deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
+            deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
+            deviceMonitor.Start();
+        }
+
+        private void StopDeviceMonitor()
+        {
+            deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
+            deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
+            deviceMonitor.Stop();
         }
 
         private void DeviceMonitor_OnDeviceChanged(List<string> devices)
@@ -196,18 +210,13 @@ namespace ScrSndCpy
             attribute.PowerOffOnClose = CheckBoxPowerOffClose.Checked;
             attribute.ShowTouches = CheckBoxShowTouches.Checked;
             attribute.NoKeyRepeat = CheckBoxNoKeyRepeat.Checked;
-            Preference.SavePreference(attribute);
+            preference.SavePreference(attribute);
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Stop device monitoring
-            if (deviceMonitor != null)
-            {
-                deviceMonitor.OnConnectionLost -= DeviceMonitor_OnConnectionLost;
-                deviceMonitor.OnDeviceChanged -= DeviceMonitor_OnDeviceChanged;
-                deviceMonitor.Stop();
-            }
+            StopDeviceMonitor();
 
             // Save current preference
             SavePreference();
