@@ -23,7 +23,7 @@ namespace ScrSndCpy
         private const string SCRCPY_FILE = "scrcpy.exe";
 
         private TaskScheduler uiContext;
-        private DeviceMonitor deviceMonitor;
+        private readonly IDeviceMonitor deviceMonitor = new DeviceMonitor();
         private readonly BindingList<string> connectedDevices = new BindingList<string>();
 
         private readonly IPreference Preference = new IniFilePreference();
@@ -126,7 +126,6 @@ namespace ScrSndCpy
                     pAdb.WaitForExit();
 
                     // Start tracking devices
-                    deviceMonitor = new DeviceMonitor();
                     deviceMonitor.OnDeviceChanged += DeviceMonitor_OnDeviceChanged;
                     deviceMonitor.OnConnectionLost += DeviceMonitor_OnConnectionLost;
                     deviceMonitor.Start();

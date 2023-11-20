@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="DeviceMonitor.cs" />
     <Compile Include="Display.cs" />
+    <Compile Include="IDeviceMonitor.cs" />
     <Compile Include="IniFilePreference.cs" />
     <Compile Include="IPreference.cs" />
     <Compile Include="MainForm.cs">

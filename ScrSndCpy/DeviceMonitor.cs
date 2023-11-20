@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 
 namespace ScrSndCpy
 {
-    internal class DeviceMonitor
+    internal class DeviceMonitor : IDeviceMonitor
     {
-        public delegate void DeviceEventHandler(List<string> devices);
-        public delegate void ConnectionEventHandler();
-
         public event DeviceEventHandler OnDeviceChanged;
         public event ConnectionEventHandler OnConnectionLost;
 
