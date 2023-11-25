@@ -44,6 +44,12 @@ namespace ScrSndCpy
             ShowVersionAndRunAdb();
         }
 
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StopDeviceMonitor();
+            SavePreference();
+        }
+
         private void SetDefaultValues()
         {
             var deviceMode = new Display.DeviceMode();
@@ -213,96 +219,15 @@ namespace ScrSndCpy
             preference.SavePreference(attribute);
         }
 
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            // Stop device monitoring
-            StopDeviceMonitor();
-
-            // Save current preference
-            SavePreference();
-        }
-
         private async void ButtonPlay_Click(object sender, EventArgs e)
         {
             if (TextBoxDevice.Text.Trim().Length > 0)
             {
-                var serial = TextBoxDevice.Text;
-
-                var argumentString = new StringBuilder();
-                argumentString.Append($" -s {serial}");
-
-                if (TextBoxMaxSize.Text.Trim().Length > 0)
-                    argumentString.Append($" --max-size={TextBoxMaxSize.Text}");
-                if (TextBoxBitRate.Text.Trim().Length > 0)
-                    argumentString.Append($" --video-bit-rate={TextBoxBitRate.Text}M");
-                if (TextBoxMaxFps.Text.Trim().Length > 0)
-                    argumentString.Append($" --max-fps={TextBoxMaxFps.Text}");
-                if (CheckBoxBorderless.Checked)
-                    argumentString.Append(" --window-borderless");
-                if (CheckBoxAlwaysOnTop.Checked)
-                    argumentString.Append(" --always-on-top");
-                if (CheckBoxFullscreen.Checked)
-                    argumentString.Append(" --fullscreen");
-                if (CheckBoxNoControl.Checked)
-                    argumentString.Append(" --no-control");
-                if (CheckBoxStayAwake.Checked)
-                    argumentString.Append(" --stay-awake");
-                if (CheckBoxTurnScreenOff.Checked)
-                    argumentString.Append(" --turn-screen-off");
-                if (CheckBoxNoPowerOnStart.Checked)
-                    argumentString.Append(" --no-power-on");
-                if (CheckBoxPowerOffClose.Checked)
-                    argumentString.Append(" --power-off-on-close");
-                if (CheckBoxShowTouches.Checked)
-                    argumentString.Append(" --show-touches");
-                if (CheckBoxNoKeyRepeat.Checked)
-                    argumentString.Append(" --no-key-repeat");
-
                 // Connect and check state
-                var errorMessage = await Task.Factory.StartNew(() =>
-                {
-                    // Connect to the device if IP address is present
-                    try
-                    {
-                        // Check if device is already existing in the connected list
-                        if (!connectedDevices.Contains(serial))
-                        {
-                            // Check IP address format
-                            var parts = serial.Split(':');
-                            var ip = IPAddress.Parse(parts[0]);
-                            var port = 5555;
-                            if (parts.Length > 1)
-                            {
-                                port = UInt16.Parse(parts[1]);
-                            }
-
-                            // It's IP address format, connect to it
-                            DispatchUiAction(() =>
-                            {
-                                TextBoxLog.AppendText($"Connecting to {serial}...");
-                                TextBoxLog.AppendText(Environment.NewLine);
-                            });
-                            var adbConnect = ProcessHelper.Create(ADB_FILE, $"connect {serial}");
-                            adbConnect.Start();
-                            adbConnect.WaitForExit();
-                        }
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("NOT IP Address format, ignored");
-                    }
-
-                    // Check ADB state
-                    var pAdbGetState = ProcessHelper.Create(ADB_FILE, $"-s {serial} get-state", redirectStandardError: true);
-                    pAdbGetState.Start();
-                    var errorOutput = pAdbGetState.StandardError.ReadToEnd();
-                    pAdbGetState.WaitForExit();
-
-                    return (pAdbGetState.ExitCode == 0 ? null : errorOutput);
-                });
+                var errorMessage = await CheckConnectionStateAsync();
 
                 // Show error messages if errors occured
-                if (errorMessage != null)
+                if (!string.IsNullOrEmpty(errorMessage))
                 {
                     TextBoxLog.AppendText(errorMessage);
 
@@ -316,33 +241,121 @@ namespace ScrSndCpy
                 }
 
                 // Start scrcpy
-                TextBoxLog.AppendText($"Run command: {SCRCPY_FILE} {argumentString}");
+                var exitCode = await StartScrcpyAsync();
+                TextBoxLog.AppendText($"scrcpy stopped. ({exitCode})");
                 TextBoxLog.AppendText(Environment.NewLine);
-                var scrcpyTask = Task.Factory.StartNew(() =>
-                {
-                    var scrcpy = ProcessHelper.Create(SCRCPY_FILE, argumentString.ToString(), redirectStandardOutput: true);
-                    scrcpy.Start();
-
-                    while (!scrcpy.HasExited)
-                    {
-                        var message = scrcpy.StandardOutput.ReadLine();
-                        if (message != null)
-                        {
-                            DispatchUiAction(() =>
-                            {
-                                TextBoxLog.AppendText(message);
-                                TextBoxLog.AppendText(Environment.NewLine);
-                            });
-                        }
-                    }
-
-                    DispatchUiAction(() =>
-                    {
-                        TextBoxLog.AppendText("scrcpy stopped.");
-                        TextBoxLog.AppendText(Environment.NewLine);
-                    });
-                });
             }
+        }
+
+        private Task<string> CheckConnectionStateAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                var serial = TextBoxDevice.Text;
+
+                // Connect to the device if IP address is present
+                try
+                {
+                    // Check if device is already existing in the connected list
+                    if (!connectedDevices.Contains(serial))
+                    {
+                        // Check IP address format
+                        var parts = serial.Split(':');
+                        var ip = IPAddress.Parse(parts[0]);
+                        var port = 5555;
+                        if (parts.Length > 1)
+                        {
+                            port = ushort.Parse(parts[1]);
+                        }
+
+                        // It's IP address format, connect to it
+                        DispatchUiAction(() =>
+                        {
+                            TextBoxLog.AppendText($"Connecting to {serial}...");
+                            TextBoxLog.AppendText(Environment.NewLine);
+                        });
+                        var adbConnect = ProcessHelper.Create(ADB_FILE, $"connect {serial}");
+                        adbConnect.Start();
+                        adbConnect.WaitForExit();
+                    }
+                }
+                catch
+                {
+                    Debug.WriteLine("NOT IP Address format, ignored");
+                }
+
+                // Check ADB state
+                var pAdbGetState = ProcessHelper.Create(ADB_FILE, $"-s {serial} get-state", redirectStandardError: true);
+                pAdbGetState.Start();
+                var errorOutput = pAdbGetState.StandardError.ReadToEnd();
+                pAdbGetState.WaitForExit();
+
+                return (pAdbGetState.ExitCode == 0 ? null : errorOutput);
+            });
+        }
+
+        private string GenerateScrcpyArgumentString()
+        {
+            var argumentString = new StringBuilder();
+
+            argumentString.Append($" -s {TextBoxDevice.Text}");
+
+            if (TextBoxMaxSize.Text.Trim().Length > 0)
+                argumentString.Append($" --max-size={TextBoxMaxSize.Text}");
+            if (TextBoxBitRate.Text.Trim().Length > 0)
+                argumentString.Append($" --video-bit-rate={TextBoxBitRate.Text}M");
+            if (TextBoxMaxFps.Text.Trim().Length > 0)
+                argumentString.Append($" --max-fps={TextBoxMaxFps.Text}");
+            if (CheckBoxBorderless.Checked)
+                argumentString.Append(" --window-borderless");
+            if (CheckBoxAlwaysOnTop.Checked)
+                argumentString.Append(" --always-on-top");
+            if (CheckBoxFullscreen.Checked)
+                argumentString.Append(" --fullscreen");
+            if (CheckBoxNoControl.Checked)
+                argumentString.Append(" --no-control");
+            if (CheckBoxStayAwake.Checked)
+                argumentString.Append(" --stay-awake");
+            if (CheckBoxTurnScreenOff.Checked)
+                argumentString.Append(" --turn-screen-off");
+            if (CheckBoxNoPowerOnStart.Checked)
+                argumentString.Append(" --no-power-on");
+            if (CheckBoxPowerOffClose.Checked)
+                argumentString.Append(" --power-off-on-close");
+            if (CheckBoxShowTouches.Checked)
+                argumentString.Append(" --show-touches");
+            if (CheckBoxNoKeyRepeat.Checked)
+                argumentString.Append(" --no-key-repeat");
+
+            return argumentString.ToString();
+        }
+
+        private Task<int> StartScrcpyAsync()
+        {
+            var argumentString = GenerateScrcpyArgumentString();
+            TextBoxLog.AppendText($"Run command: {SCRCPY_FILE} {argumentString}");
+            TextBoxLog.AppendText(Environment.NewLine);
+
+            return Task.Factory.StartNew(() =>
+            {
+                var scrcpy = ProcessHelper.Create(SCRCPY_FILE, argumentString, redirectStandardOutput: true);
+                scrcpy.Start();
+
+                while (!scrcpy.HasExited)
+                {
+                    var message = scrcpy.StandardOutput.ReadLine();
+                    if (message != null)
+                    {
+                        DispatchUiAction(() =>
+                        {
+                            TextBoxLog.AppendText(message);
+                            TextBoxLog.AppendText(Environment.NewLine);
+                        });
+                    }
+                }
+
+                return scrcpy.ExitCode;
+            });
         }
 
         private void ListBoxDevices_SelectedIndexChanged(object sender, EventArgs e)
